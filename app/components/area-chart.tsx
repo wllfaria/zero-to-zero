@@ -750,7 +750,8 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
               cursor={{ stroke: "#d1d5db", strokeWidth: 1 }}
               offset={20}
               position={{ y: 0 }}
-              content={({ active, payload, label }) => {
+              content={({ active, payload, label: rawLabel }) => {
+                const label = rawLabel !== undefined ? String(rawLabel) : "";
                 const cleanPayload: TooltipProps["payload"] = payload
                   ? payload.map((item: any) => ({
                       category: item.dataKey,
