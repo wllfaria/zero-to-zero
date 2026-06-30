@@ -1,0 +1,85 @@
+import { writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+/**
+ * @typedef {Object} NinjaItem
+ * @property {string} id
+ * @property {string} name
+ * @property {string} image
+ * @property {string} category
+ * @property {string} detailsId
+ */
+
+/**
+ * @typedef {Object} NinjaPricePoint
+ * @property {string} timestamp
+ * @property {number} rate
+ * @property {number} volumePrimaryValue
+ */
+
+/**
+ * @typedef {Object} NinjaPair
+ * @property {string} id
+ * @property {number} rate
+ * @property {number} volumePrimaryValue
+ * @property {NinjaPricePoint[]} history
+ */
+
+/**
+ * @typedef {Object} NinjaMirrorHistoryResponse
+ * @property {NinjaItem} item
+ * @property {NinjaPair[]} pairs
+ */
+
+/**
+ * @typedef {Object} DailyRate
+ * @property {string} date
+ * @property {number} rate
+ */
+
+const NINJA_MIRROR_HISTORY_API =
+  "https://poe.ninja/poe2/api/economy/exchange/current/details?league=Runes+of+Aldur&type=Currency&id=mirror-of-kalandra";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const OUTPUT_PATH = join(__dirname, "../data/mirror-history.json");
+
+/** @param {NinjaPricePoint[]} history
+ * @returns {DailyRate[]} */
+function averageByDay(history) {
+  /** @type {Map<string, number[]>} */
+  const byDay = new Map();
+
+  for (const point of history) {
+    const date = point.timestamp.slice(0, 10);
+    if (!byDay.has(date)) byDay.set(date, []);
+    byDay.get(date).push(point.rate);
+  }
+
+  return Array.from(byDay.entries())
+    .map(([date, rates]) => ({
+      date,
+      rate: Math.round(rates.reduce((sum, r) => sum + r, 0) / rates.length),
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+async function fetchNinjaHistory() {
+  try {
+    const response = await fetch(NINJA_MIRROR_HISTORY_API);
+    /** @type {NinjaMirrorHistoryResponse} */
+    const data = await response.json();
+    const divinePriceHistory = data.pairs[0].history;
+
+    const daily = averageByDay(divinePriceHistory).filter(
+      (d) => d.date >= "2026-06-08"
+    );
+    writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
+    console.log(`${daily.length} days of mirror history saved`);
+  } catch (err) {
+    console.error("failed to fetch ninja mirror price history", err);
+    process.abort();
+  }
+}
+
+fetchNinjaHistory();
