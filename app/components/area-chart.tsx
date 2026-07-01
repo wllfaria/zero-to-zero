@@ -481,7 +481,7 @@ interface AreaChartProps extends React.HTMLAttributes<HTMLDivElement> {
   showYAxis?: boolean;
   showGridLines?: boolean;
   yAxisWidth?: number;
-  intervalType?: "preserveStartEnd" | "equidistantPreserveStart";
+  intervalType?: "preserveStartEnd" | "equidistantPreserveStart" | number;
   showTooltip?: boolean;
   showLegend?: boolean;
   autoMinValue?: boolean;
@@ -663,7 +663,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                 : undefined
             }
             margin={{
-              bottom: xAxisLabel ? 30 : undefined,
+              bottom: xAxisLabel ? 50 : 40,
               left: yAxisLabel ? 20 : undefined,
               right: yAxisLabel ? 5 : undefined,
               top: 5,
@@ -682,6 +682,9 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
               hide={!showXAxis}
               dataKey={index}
               interval={startEndOnly ? "preserveStartEnd" : intervalType}
+              angle={-45}
+              textAnchor="end"
+              height={60}
               tick={{ transform: "translate(0, 6)" }}
               ticks={
                 startEndOnly
@@ -819,9 +822,8 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
               const categoryId = `${areaId}-${category.replace(/[^a-zA-Z0-9]/g, "")}`;
               return (
                 <React.Fragment key={category}>
-                  <defs key={category}>
+                  <defs>
                     <linearGradient
-                      key={category}
                       className={cx(
                         getColorClassName(
                           categoryColors.get(
@@ -939,7 +941,6 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       }
                       return <React.Fragment key={index}></React.Fragment>;
                     }}
-                    key={category}
                     name={category}
                     type="linear"
                     dataKey={category}

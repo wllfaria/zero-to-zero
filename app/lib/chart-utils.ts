@@ -91,32 +91,26 @@ export const getColorClassName = (
   return chartColors[color]?.[type] ?? fallbackColor[type];
 };
 
-// Tremor Raw getYAxisDomain [v0.0.0]
-
 export const getYAxisDomain = (
   autoMinValue: boolean,
-  minValue: number | undefined,
-  maxValue: number | undefined,
+  minValue?: number,
+  maxValue?: number,
 ) => {
   const minDomain = autoMinValue ? "auto" : (minValue ?? 0);
   const maxDomain = maxValue ?? "auto";
   return [minDomain, maxDomain];
 };
 
-// Tremor Raw hasOnlyOneValueForKey [v0.1.0]
-
-export function hasOnlyOneValueForKey(
-  array: any[],
-  keyToCheck: string,
+export function hasOnlyOneValueForKey<T, K extends keyof T>(
+  items: T[],
+  keyToCheck: K,
 ): boolean {
-  const val: any[] = [];
+  const val: T[K][] = [];
 
-  for (const obj of array) {
-    if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
-      val.push(obj[keyToCheck]);
-      if (val.length > 1) {
-        return false;
-      }
+  for (const item of items) {
+    if (Object.prototype.hasOwnProperty.call(item, keyToCheck)) {
+      val.push(item[keyToCheck]);
+      if (val.length > 1) return false;
     }
   }
 
