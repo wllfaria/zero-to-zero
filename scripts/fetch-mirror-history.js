@@ -1,4 +1,4 @@
-import { writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -43,6 +43,7 @@ const NINJA_MIRROR_HISTORY_API =
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = join(__dirname, "../data/mirror-history.json");
+const OVERLAY_DATA_PATH = join(__dirname, "../data/overlay-data.json");
 
 /** @param {NinjaPricePoint[]} history
  * @returns {DailyRate[]} */
@@ -78,6 +79,12 @@ async function fetchNinjaHistory() {
     );
     writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
     console.log(`${daily.length} days of mirror history saved`);
+
+    const overlayData = JSON.parse(readFileSync(OVERLAY_DATA_PATH, "utf-8"));
+    overlayData.mirrorPrice = daily[daily.length - 1].rate;
+    overlayData.updatedAt = new Date().toISOString();
+    writeFileSync(OVERLAY_DATA_PATH, JSON.stringify(overlayData, null, 2));
+    console.log(`overlay mirror price updated to ${overlayData.mirrorPrice}`);
   } catch (err) {
     console.error("failed to fetch ninja mirror price history", err);
     process.abort();
