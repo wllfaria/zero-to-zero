@@ -46,20 +46,22 @@ const OUTPUT_PATH = join(__dirname, "../data/mirror-history.json");
 
 /** @param {NinjaPricePoint[]} history
  * @returns {DailyRate[]} */
-function averageByDay(history) {
-  /** @type {Map<string, number[]>} */
+function lastByDay(history) {
+  /** @type {Map<string, NinjaPricePoint>} */
   const byDay = new Map();
 
   for (const point of history) {
     const date = point.timestamp.slice(0, 10);
-    if (!byDay.has(date)) byDay.set(date, []);
-    byDay.get(date).push(point.rate);
+    const existing = byDay.get(date);
+    if (!existing || point.timestamp > existing.timestamp) {
+      byDay.set(date, point);
+    }
   }
 
   return Array.from(byDay.entries())
-    .map(([date, rates]) => ({
+    .map(([date, point]) => ({
       date,
-      rate: Math.round(rates.reduce((sum, r) => sum + r, 0) / rates.length),
+      rate: Math.round(point.rate),
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 }
@@ -71,8 +73,8 @@ async function fetchNinjaHistory() {
     const data = await response.json();
     const divinePriceHistory = data.pairs[0].history;
 
-    const daily = averageByDay(divinePriceHistory).filter(
-      (d) => d.date >= "2026-06-08"
+    const daily = lastByDay(divinePriceHistory).filter(
+      (d) => d.date >= "2026-06-08",
     );
     writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
     console.log(`${daily.length} days of mirror history saved`);

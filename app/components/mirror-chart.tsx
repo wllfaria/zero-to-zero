@@ -28,7 +28,6 @@ export const MirrorChart = ({ data }: MirrorChartProps) => {
         valueFormatter={(n) => fmt(n)}
         intervalType={0}
         showXAxis={false}
-        showYAxis={false}
       />
     </>
   );
