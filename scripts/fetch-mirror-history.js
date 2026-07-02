@@ -44,6 +44,54 @@ const NINJA_MIRROR_HISTORY_API =
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = join(__dirname, "../data/mirror-history.json");
 const OVERLAY_DATA_PATH = join(__dirname, "../data/overlay-data.json");
+const FARMER_PROGRESS_PATH = join(__dirname, "../data/farmer-progress.json");
+const FARMER_STREAM_DATA_PATH = join(
+  __dirname,
+  "../data/farmer-stream-data.json",
+);
+
+/** @param {DailyRate[]} mirrorHistory */
+function updateOverlayData(mirrorHistory) {
+  const farmerProgress = JSON.parse(
+    readFileSync(FARMER_PROGRESS_PATH, "utf-8"),
+  );
+  const streamData = JSON.parse(readFileSync(FARMER_STREAM_DATA_PATH, "utf-8"));
+
+  const netWorth = farmerProgress[farmerProgress.length - 1].rate;
+
+  const totalHours = streamData.reduce((sum, d) => sum + d.hoursStreamed, 0);
+  const avgHoursPerDay = totalHours / streamData.length;
+  const divPerHour = netWorth / totalHours;
+
+  const firstMirrorPrice = mirrorHistory[0].rate;
+  const lastMirrorPrice = mirrorHistory[mirrorHistory.length - 1].rate;
+  const mirrorDailyInflation =
+    (lastMirrorPrice - firstMirrorPrice) / (mirrorHistory.length - 1);
+  const mirrorPriceDelta =
+    mirrorHistory.length > 1
+      ? lastMirrorPrice - mirrorHistory[mirrorHistory.length - 2].rate
+      : 0;
+
+  const farmerDailyEarnings = divPerHour * avgHoursPerDay;
+  const netDailyProgress = farmerDailyEarnings - mirrorDailyInflation;
+  const currentGap = lastMirrorPrice - netWorth;
+  const daysToMirror =
+    netDailyProgress > 0 ? Math.ceil(currentGap / netDailyProgress) : null;
+
+  const overlayData = {
+    updatedAt: new Date().toISOString(),
+    netWorth,
+    mirrorPrice: lastMirrorPrice,
+    mirrorPriceDelta,
+    mirrorDailyInflation: Math.round(mirrorDailyInflation),
+    daysToMirror,
+  };
+
+  writeFileSync(OVERLAY_DATA_PATH, JSON.stringify(overlayData, null, 2));
+  console.log(
+    `overlay data updated: net worth ${netWorth}d, mirror ${lastMirrorPrice}d, ETA ${daysToMirror ?? "cooked"}`,
+  );
+}
 
 /** @param {NinjaPricePoint[]} history
  * @returns {DailyRate[]} */
@@ -80,11 +128,7 @@ async function fetchNinjaHistory() {
     writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
     console.log(`${daily.length} days of mirror history saved`);
 
-    const overlayData = JSON.parse(readFileSync(OVERLAY_DATA_PATH, "utf-8"));
-    overlayData.mirrorPrice = daily[daily.length - 1].rate;
-    overlayData.updatedAt = new Date().toISOString();
-    writeFileSync(OVERLAY_DATA_PATH, JSON.stringify(overlayData, null, 2));
-    console.log(`overlay mirror price updated to ${overlayData.mirrorPrice}`);
+    updateOverlayData(daily);
   } catch (err) {
     console.error("failed to fetch ninja mirror price history", err);
     process.abort();
