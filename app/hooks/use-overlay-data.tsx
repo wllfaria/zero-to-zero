@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 const OVERLAY_DATA_URL =
   "https://raw.githubusercontent.com/wllfaria/zero-to-zero/main/data/overlay-data.json";
 
-// 60 minutes
-const POLL_INTERVAL_MS = 60 * 60 * 1000;
+// 2 minutes
+const POLL_INTERVAL_MS = 2 * 60 * 1000;
 
 export type OverlayData = {
   updatedAt: string;
