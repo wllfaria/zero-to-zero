@@ -86,5 +86,13 @@
   {
     "date": "2026-06-30",
     "hoursStreamed": 12
+  },
+  {
+    "date": "2026-06-01",
+    "hoursStreamed": 10
+  },
+  {
+    "date": "2026-06-02",
+    "hoursStreamed": 11
   }
 ]
