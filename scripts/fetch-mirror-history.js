@@ -76,7 +76,11 @@ function updateOverlayData(mirrorHistory) {
   const netDailyProgress = farmerDailyEarnings - mirrorDailyInflation;
   const currentGap = lastMirrorPrice - netWorth;
   const daysToMirror =
-    netDailyProgress > 0 ? Math.ceil(currentGap / netDailyProgress) : null;
+    currentGap <= 0
+      ? 0
+      : netDailyProgress > 0
+        ? Math.ceil(currentGap / netDailyProgress)
+        : null;
 
   const overlayData = {
     updatedAt: new Date().toISOString(),
@@ -89,7 +93,7 @@ function updateOverlayData(mirrorHistory) {
 
   writeFileSync(OVERLAY_DATA_PATH, JSON.stringify(overlayData, null, 2));
   console.log(
-    `overlay data updated: net worth ${netWorth}d, mirror ${lastMirrorPrice}d, ETA ${daysToMirror ?? "cooked"}`,
+    `overlay data updated: net worth ${netWorth}d, mirror ${lastMirrorPrice}d, ETA ${daysToMirror === 0 ? "WE GOT IT" : (daysToMirror ?? "cooked")}`,
   );
 }
 

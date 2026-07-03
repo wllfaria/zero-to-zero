@@ -16,6 +16,7 @@ export type UseEtaToMirror = (
 ) => UseEtaToMirrorResult;
 
 const getValue = (daysToMirror: number) => {
+  if (daysToMirror <= 0) return "WE GOT IT";
   return daysToMirror === Infinity ? "cooked" : `~${daysToMirror} days`;
 };
 
@@ -25,6 +26,8 @@ const getSubtitle = ({
   divPerHourToWin,
   mirrorDailyInflation,
 }: UseEtaToMirrorInput) => {
+  if (daysToMirror <= 0) return "lil gup got spooned";
+
   if (daysToMirror >= Infinity) {
     const shortfall = divPerHourShortfall.toFixed(1);
     const rationToWin = divPerHourToWin.toFixed(1);
@@ -35,7 +38,8 @@ const getSubtitle = ({
 };
 
 const getRoast = (daysToMirror: number) => {
-  if (daysToMirror >= Infinity) return "maybe we should give up";
+  if (daysToMirror <= 0) return "WE ACTUALLY DID IT";
+  else if (daysToMirror >= Infinity) return "maybe we should give up";
   else if (daysToMirror >= 50) return "almost there copium";
   else if (daysToMirror >= 20) return "guys trust we're getting close";
   else return "HOLY we may actually get a mirror";

@@ -6,6 +6,7 @@ export type StatSummaryItem = {
   value: string;
   sub: string;
   roast?: string;
+  highlight?: boolean;
 };
 
 export type StatSummaryList = StatSummaryItem[];
@@ -17,13 +18,14 @@ export type StatsSummaryProps = {
 export const StatsSummary = ({ stats }: StatsSummaryProps) => {
   return (
     <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      {stats.map(({ key, label, value, sub, roast }) => (
+      {stats.map(({ key, label, value, sub, roast, highlight }) => (
         <StatCard
           key={key}
           label={label}
           value={value}
           sub={sub}
           roast={roast}
+          highlight={highlight}
         />
       ))}
     </section>

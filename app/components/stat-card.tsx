@@ -3,13 +3,26 @@ export type StatCardProps = {
   value: string;
   sub?: string;
   roast?: string;
+  highlight?: boolean;
 };
 
-export const StatCard = ({ label, value, sub, roast }: StatCardProps) => {
+export const StatCard = ({
+  label,
+  value,
+  sub,
+  roast,
+  highlight,
+}: StatCardProps) => {
   return (
     <div className="group relative flex flex-col gap-1 rounded-lg border border-gray-200 dark:border-gray-800 px-4 py-3">
       <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
-      <span className="text-xl font-semibold tabular-nums text-gray-900 dark:text-gray-50">
+      <span
+        className={`text-xl font-semibold tabular-nums ${
+          highlight
+            ? "text-emerald-500 dark:text-emerald-400"
+            : "text-gray-900 dark:text-gray-50"
+        }`}
+      >
         {value}
       </span>
       {sub && (

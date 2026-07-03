@@ -59,6 +59,7 @@ export const StreamStatsSummary = ({
       value,
       sub: subtitle,
       roast: roast,
+      highlight: daysToMirror <= 0,
     },
   ];
 

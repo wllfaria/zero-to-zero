@@ -64,7 +64,11 @@ export function getChallengeStats(): ChallengeStats {
   const netDailyProgress = farmerDailyEarnings - mirrorDailyInflation;
   const currentGap = lastMirrorPrice - currentNetWorth;
   const daysToMirror =
-    netDailyProgress > 0 ? Math.ceil(currentGap / netDailyProgress) : Infinity;
+    currentGap <= 0
+      ? 0
+      : netDailyProgress > 0
+        ? Math.ceil(currentGap / netDailyProgress)
+        : Infinity;
 
   // how much div/h he'd need to add to just break even with mirror inflation
   const breakEvenDivPerHour = mirrorDailyInflation / avgHoursPerDay;

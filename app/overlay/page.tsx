@@ -29,6 +29,7 @@ export default function Overlay() {
     100,
     Math.max(0, (data.netWorth / data.mirrorPrice) * 100),
   );
+  const mirrorAcquired = data.daysToMirror != null && data.daysToMirror <= 0;
   const eta =
     data.daysToMirror == null ? "cooked" : `~${data.daysToMirror}d`;
 
@@ -71,9 +72,15 @@ export default function Overlay() {
         <div className="mt-1 text-xs opacity-70">{progressPct.toFixed(1)}%</div>
       </div>
 
-      <div className="text-xs opacity-70">
-        ETA {eta} · mirror +{fmt(data.mirrorDailyInflation)}/day
-      </div>
+      {mirrorAcquired ? (
+        <div className="text-sm font-bold tracking-wide text-emerald-400">
+          WE GOT IT 🪞
+        </div>
+      ) : (
+        <div className="text-xs opacity-70">
+          ETA {eta} · mirror +{fmt(data.mirrorDailyInflation)}/day
+        </div>
+      )}
     </div>
   );
 }
