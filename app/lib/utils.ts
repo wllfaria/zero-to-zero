@@ -24,5 +24,5 @@ export const hasErrorInput = [
 
 export const fmt = (n: number | null | undefined) => {
   if (n == null) return "—";
-  return `${Intl.NumberFormat("en").format(Math.abs(n))}d`;
+  return `${Intl.NumberFormat("en").format(n)}d`;
 };

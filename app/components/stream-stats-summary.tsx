@@ -43,15 +43,14 @@ export const StreamStatsSummary = ({
       key: "avgDailyPlaytime",
       label: "avg playtime per day",
       value: `${avgDailyHours.toFixed(1)}h`,
-      sub: "no life diff",
-      roast: "fubgun would have 3x",
+      sub: "just like the average player",
     },
     {
       key: "divPerHour",
       label: "div / hour",
       value: `${divPerHour.toFixed(1)}d`,
       sub: `${currentNetWorth}d total net worth`,
-      roast: "yet bro claims 60d/h",
+      roast: "hideout warrior DIESOFCRINGE",
     },
     {
       key: "etaToMirror",

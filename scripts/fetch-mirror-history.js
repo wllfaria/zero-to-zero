@@ -127,7 +127,7 @@ async function fetchNinjaHistory() {
     const divinePriceHistory = data.pairs[0].history;
 
     const daily = lastByDay(divinePriceHistory).filter(
-      (d) => d.date >= "2026-06-08",
+      (d) => d.date >= "2026-07-04",
     );
     writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
     console.log(`${daily.length} days of mirror history saved`);

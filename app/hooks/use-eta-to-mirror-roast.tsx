@@ -42,7 +42,7 @@ const getRoast = (daysToMirror: number) => {
   else if (daysToMirror >= Infinity) return "maybe we should give up";
   else if (daysToMirror >= 50) return "almost there copium";
   else if (daysToMirror >= 20) return "guys trust we're getting close";
-  else return "HOLY we may actually get a mirror";
+  else return "and he said hideout would be harder";
 };
 
 export const useEtaToMirrorRoast: UseEtaToMirror = (input) => {

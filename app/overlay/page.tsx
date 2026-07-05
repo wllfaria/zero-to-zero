@@ -30,8 +30,7 @@ export default function Overlay() {
     Math.max(0, (data.netWorth / data.mirrorPrice) * 100),
   );
   const mirrorAcquired = data.daysToMirror != null && data.daysToMirror <= 0;
-  const eta =
-    data.daysToMirror == null ? "cooked" : `~${data.daysToMirror}d`;
+  const eta = data.daysToMirror == null ? "cooked" : `~${data.daysToMirror}d`;
 
   return (
     <div className="inline-flex flex-col gap-3 rounded-lg bg-black/70 p-4 text-white backdrop-blur-sm">
