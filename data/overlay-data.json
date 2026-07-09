@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-07-09T08:24:11.446Z",
+  "updatedAt": "2026-07-09T11:53:44.748Z",
   "netWorth": 1000,
-  "mirrorPrice": 6423,
-  "mirrorPriceDelta": -449,
-  "mirrorDailyInflation": -20,
+  "mirrorPrice": 6400,
+  "mirrorPriceDelta": -386,
+  "mirrorDailyInflation": -15,
   "daysToMirror": 6
 }
