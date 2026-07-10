@@ -129,10 +129,21 @@ async function fetchNinjaHistory() {
     const daily = lastByDay(divinePriceHistory).filter(
       (d) => d.date >= "2026-07-04",
     );
-    writeFileSync(OUTPUT_PATH, JSON.stringify(daily, null, 2));
-    console.log(`${daily.length} days of mirror history saved`);
+    const latestDay = daily[daily.length - 1];
 
-    updateOverlayData(daily);
+    /** @type {DailyRate[]} */
+    const existingHistory = JSON.parse(readFileSync(OUTPUT_PATH, "utf-8"));
+    const withoutLatestDay = existingHistory.filter(
+      (d) => d.date !== latestDay.date,
+    );
+    const mirrorHistory = [...withoutLatestDay, latestDay].sort((a, b) =>
+      a.date.localeCompare(b.date),
+    );
+
+    writeFileSync(OUTPUT_PATH, JSON.stringify(mirrorHistory, null, 2));
+    console.log(`added ${latestDay.date} (${latestDay.rate}d) to mirror history`);
+
+    updateOverlayData(mirrorHistory);
   } catch (err) {
     console.error("failed to fetch ninja mirror price history", err);
     process.abort();
