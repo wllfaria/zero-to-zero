@@ -31,6 +31,10 @@ export default function Home() {
       <main className="flex flex-1 w-full max-w-5xl flex-col gap-6 pt-8 pb-32 px-16 bg-white dark:bg-black">
         <Header />
 
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400">
+          🪞 ZTM finished - farmer got the mirror on July 3, 2026
+        </div>
+
         <StreamStatsSummary
           totalHours={totalHours}
           totalSteams={totalStreams}
